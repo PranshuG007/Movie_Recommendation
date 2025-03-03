@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Recommendation System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #suggestions {
+      position: absolute;
+      z-index: 20;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .movie-card {
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-purple-500 to-indigo-600 min-h-screen flex flex-col items-center justify-center p-6">
+
+  <h1 class="text-4xl font-bold text-white mb-6">🎬 Movie Recommendation System</h1>
+
+  <div class="relative w-full max-w-xl">
+    <input id="movieInput" type="text" placeholder="Search for a movie..."
+      class="w-full p-4 pl-12 text-lg border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+    <!-- Search Icon -->
+    <svg class="w-6 h-6 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M21 21l-4.35-4.35M9.5 17a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" />
+    </svg>
+
+    <!-- Suggestions Dropdown -->
+    <ul id="suggestions"
+      class="hidden bg-white border border-gray-300 rounded-xl mt-1 w-full shadow-lg max-h-60 overflow-y-auto"></ul>
+  </div>
+
+  <button id="recommendBtn"
+    class="mt-4 px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded-xl shadow-lg transition">
+    Get Recommendations
+  </button>
+
+  <h2 class="text-2xl text-white mt-10 mb-4">Recommended Movies:</h2>
+  <div id="recommendations" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl">
+    <!-- Recommendations will appear here -->
+  </div>
+
+  <script>
+    const movieInput = document.getElementById('movieInput');
+    const suggestionsList = document.getElementById('suggestions');
+    const recommendBtn = document.getElementById('recommendBtn');
+    const recommendationsDiv = document.getElementById('recommendations');
+
+    movieInput.addEventListener('input', () => {
+      const query = movieInput.value.trim();
+      if (query.length === 0) {
+        suggestionsList.classList.add('hidden');
+        return;
+      }
+
+      suggestionsList.innerHTML = '<li class="p-3 text-gray-500 text-center">Loading...</li>';
+      suggestionsList.classList.remove('hidden');
+
+      fetch(`/autocomplete?q=${query}`)
+        .then(res => res.json())
+        .then(matches => {
+          if (matches.length === 0) {
+            suggestionsList.innerHTML = '<li class="p-3 text-gray-500 text-center">No matches found.</li>';
+          } else {
+            suggestionsList.innerHTML = matches.map(movie =>
+              `<li class="p-3 hover:bg-gray-100 cursor-pointer">${movie}</li>`
+            ).join('');
+          }
+
+          suggestionsList.querySelectorAll('li').forEach(item => {
+            item.addEventListener('click', () => {
+              movieInput.value = item.textContent;
+              suggestionsList.classList.add('hidden');
+            });
+          });
+        });
+    });
+
+    recommendBtn.addEventListener('click', () => {
+      const movieName = movieInput.value.trim();
+      if (movieName.length === 0) {
+        alert('Please enter a movie name!');
+        return;
+      }
+
+      recommendationsDiv.innerHTML = '<p class="text-white text-center col-span-full">Loading recommendations...</p>';
+
+      fetch('/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ movie: movieName })
+      })
+        .then(res => res.json())
+        .then(recommendations => {
+          if (recommendations.length === 0) {
+            recommendationsDiv.innerHTML = '<p class="text-white col-span-full text-center">❌ No recommendations found. Please check the movie name.</p>';
+          } else {
+            recommendationsDiv.innerHTML = recommendations.map(title =>
+              `<div class="movie-card bg-gray-100 p-4 rounded-xl shadow-md hover:shadow-xl hover:ring-2 hover:ring-purple-400 transition">
+                🎥 ${title}
+              </div>`
+            ).join('');
+          }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!movieInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+        suggestionsList.classList.add('hidden');
+      }
+    });
+  </script>
+
+</body>
+
+</html>
