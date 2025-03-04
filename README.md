@@ -20,11 +20,6 @@ This is a **Movie Recommendation System** built using **Python**, **Flask**, and
 
 ---
 
-## 📂 Project Structure
-Movie_Recommendation/ │ ├── static/ │ └── styles.css # Custom CSS styles │ ├── templates/ │ ├── index.html # Homepage with movie selection │ └── recommend.html # Displays recommended movies │ ├── final_dataset_cleaned.csv # Preprocessed movie dataset ├── recommend.py # Recommendation model logic ├── app.py # Main Flask application ├── requirements.txt # Python dependencies └── README.md # Project documentation
-
----
-
 ## ✅ How to Run the Project
 
 1. **Clone the repository:**
@@ -42,10 +37,6 @@ Movie_Recommendation/ │ ├── static/ │ └── styles.css # Custom CS
    - Windows:
      ```bash
      venv\Scripts\activate
-     ```
-   - macOS/Linux:
-     ```bash
-     source venv/bin/activate
      ```
 
 4. **Install the dependencies:**
@@ -66,8 +57,8 @@ Movie_Recommendation/ │ ├── static/ │ └── styles.css # Custom CS
 ---
 
 ## 🙌 Connect with me
-- [LinkedIn](https://www.linkedin.com/in/your-profile)
-- [GitHub](https://github.com/your-username)
+- [LinkedIn](https://www.linkedin.com/in/pranshugoyal2001)
+- [GitHub](https://github.com/PranshuG007)
 
 ---
 
