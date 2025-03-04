@@ -1,4 +1,5 @@
-"""This Code is to clean the file final_dataset.csv to final_dataset_cleaned.csv"""
+"""First merge and clean the links.csv, ratings.csv, tags.csv, movies.csv and create final_dataset.csv.
+Then use the below Code is to clean the final_dataset.csv to final_dataset_cleaned.csv"""
 
 
 import pandas as pd
